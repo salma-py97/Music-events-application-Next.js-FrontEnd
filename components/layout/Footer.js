@@ -1,8 +1,8 @@
 import Link from 'next/link'
-import styles from '../../styles/Footer.module.css'
+import styles from '@/styles/Footer.module.css'
 
 const Footer = () => {
-  const {footer, p} = styles
+  const {footer} = styles
   return (
     <footer className={footer}>
       <p>Copyright &copy; DJ Events 2021</p>
