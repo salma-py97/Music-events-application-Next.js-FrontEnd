@@ -40,19 +40,22 @@ h1 {
 }
 
 .btn-secondary {
-  font: inherit;
-  font-size: 13px;
-  background: #000;
+  /* font-size: 13px; */
+  background: #333;
   color: #fff !important;
   border: 0;
   border-radius: 5px;
-  padding: 5px 15px;
-  margin: 0 20px;
+  padding: 10px 20px;
+  margin: auto;
+  /* margin: auto; */
+  display: flex;
+  width: 300px;
+  justify-content: center;
   cursor: pointer;
 }
 
 .btn-secondary:hover {
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .btn-icon {
