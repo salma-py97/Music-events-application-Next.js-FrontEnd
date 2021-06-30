@@ -55,7 +55,7 @@ const AddEventPage = () => {
 
 
     
-    console.log(values)
+    // console.log(values)
     
   }
   
