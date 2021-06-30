@@ -1,5 +1,6 @@
 import Layout from '@/components/layout/Layout'
 import Modal from '@/components/Modal'
+import ImageUpload from '@/components/ImageUpload'
 import {useState} from 'react'
 import {useRouter} from 'next/router'
 import Link from 'next/link'
@@ -98,8 +99,20 @@ const EditEventPage = ({evt}) => {
       // }
       
       // SO WE NEED TO WRITE [name]
-      setValues({...values, [name] : value})
-      
+      setValues({...values, [name] : value})      
+    }
+
+    // Image Upload
+    const imageUploaded = async (e) => {
+      console.log('IMAGE UPLOADED WITH SUCCESS')
+
+      const res = await fetch (`${API_URL}/events/${id}`)
+      const data = await res.json()
+
+      setImagePreview(data.image.formats.thumbnail.url)
+
+      setShowModal(false)
+
     }
     
     return (
@@ -187,7 +200,7 @@ const EditEventPage = ({evt}) => {
         </button>
       </div>
       <Modal show={showModal} onClose={() => setShowModal(false)}>
-        IMAGE UPLOAD
+        <ImageUpload id={id} imageUploaded={imageUploaded} />
       </Modal>
       
     </Layout>
