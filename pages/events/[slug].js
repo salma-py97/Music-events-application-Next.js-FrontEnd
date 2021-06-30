@@ -5,16 +5,28 @@ import styles from '@/styles/Event.module.css'
 import {FaPencilAlt, FaTimes} from 'react-icons/fa'
 import Link from 'next/link'
 import Image from 'next/image'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const EventPage = ({evt}) => {
   const router = useRouter();
   const {event, controls, img, back, remove} = styles
-  const {name, description, slug, date, time, venue, performers, image, address} = evt
+  const {name, description, slug, date, time, venue, performers, image, address, id} = evt
 
-  const deleteEvent = (e) => {
+  const deleteEvent = async (e) => {
     e.preventDefault()
-    console.log('deleted')
+    if(confirm('Are you sure ?')) {
+      const res = await fetch(`${API_URL}/events/${id}`, {
+        method: 'DELETE',
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        toast.error(data.message)
+      } else {
+        router.push('/events')
+      }
+    }
   }
   
   return (
@@ -32,6 +44,7 @@ const EventPage = ({evt}) => {
           {new Date(date).toLocaleDateString('en-US')} at {time}
         </span>
         <h1>{name}</h1>
+        <ToastContainer />
         {image && 
           <div className={img}>
             {/* see localhost:1337/events, images is in a formats object */}
