@@ -9,14 +9,14 @@ const EventItem = ({evt}) => {
     <div className={event}>
       <div className={img}>
         <Image 
-          src={image ? image : "/images/event-default.png"} 
+          src={image ? image.formats.thumbnail.url : "/images/event-default.png"} 
           height={150} 
           width={170} 
-          alt="" 
+          alt="..." 
         />
       </div>
       <div className={info}>
-        <span>{date} at {time}</span>
+        <span>{new Date(date).toLocaleDateString('en-US')} at {time}</span>
         <h3>{name}</h3>
       </div>
       <div className={link}>

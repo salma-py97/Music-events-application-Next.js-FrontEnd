@@ -1,18 +1,59 @@
 import {useRouter} from 'next/router'
 import Layout from '@/components/layout/Layout'
 import {API_URL} from '@/config/index'
+import styles from '@/styles/Event.module.css'
+import {FaPencilAlt, FaTimes} from 'react-icons/fa'
+import Link from 'next/link'
+import Image from 'next/image'
 
 
 const EventPage = ({evt}) => {
   const router = useRouter();
+  const {event, controls, img, back, remove} = styles
+  const {name, description, slug, date, time, venue, performers, image, address} = evt
+
+  const deleteEvent = (e) => {
+    e.preventDefault()
+    console.log('deleted')
+  }
   
   return (
     <Layout title={`DJ Events - ${router.query.slug}`}>
-      <div>
-        <h1>My event</h1>
-        <h3>{evt.name}</h3>
+      <div className={event}>
+        <div className={controls}>
+          <Link href={`/events/edit/${evt.id}`}>
+            <a>
+              <FaPencilAlt /> Edit Event
+            </a>
+          </Link>
+          <a href="#" className={remove} onClick={deleteEvent}><FaTimes /> Delete Event</a>
+        </div>
+        <span>
+          {new Date(date).toLocaleDateString('en-US')} at {time}
+        </span>
+        <h1>{name}</h1>
+        {image && 
+          <div className={img}>
+            {/* see localhost:1337/events, images is in a formats object */}
+            <Image src={image.formats.medium.url} width={960} height={600} alt="" />
+          </div>
+        }
+        <h3>Performers :</h3>
+        <p>{performers}</p>
+        <h3>Description :</h3>
+        <p>{description}</p>
+        <h3>Venue: {venue}</h3>
+        <p>{address}</p>
         <br />
-        <button className="btn-secondary" onClick={() => router.push('/')}>Go Home</button>
+
+        <Link href="/events">
+          <a className={`btn-secondary ${back}`}>
+           {'<'} Go Back
+          </a>
+        </Link>
+
+        {/* redirecting using useRouter */}
+        {/* <button className="btn-secondary" onClick={() => router.push('/')}>Go Home</button> */}
       </div>
     </Layout>
   )
@@ -21,34 +62,52 @@ const EventPage = ({evt}) => {
 export default EventPage
 
 // getStaticProps() & StaticPaths()
-export const getStaticProps = async (context) => {
-
-  console.log(context)
-
-  const res = await fetch(`${API_URL}/api/events/${context.params.slug}`)
-
-  const events = await res.json()
-
-  return {
-    props :  {
-      evt: events[0],
-    },
-    revalidate: 1
+  // getStaticPaths()
+  export const getStaticPaths = async () => {
+    // const res = await fetch(`${API_URL}/api/events`)
+    const res = await fetch(`${API_URL}/events`)
+    const events = await res.json()
+    const paths = events.map(evt => ({params:{slug: evt.slug}}))
+    return {
+      paths,
+      fallback: false,
+    }
   }
-}
-export const getStaticPaths = async () => {
-
-  const res = await fetch(`${API_URL}/api/events`)
-  const events = await res.json()
 
 
-  const paths = events.map(evt => ({params:{slug: evt.slug}}))
+  // getStaticProps()
+  export const getStaticProps = async (context) => {
+    // console.log(context)
+    // with API Routes
+    // const res = await fetch(`${API_URL}/api/events/${context.params.slug}`)
+    // With Strapi, we use queries like : http://localhost:1337/events?slug=............
+    const res = await fetch(`${API_URL}/events?slug=${context.params.slug}`)
+    const events = await res.json()
+    // console.log("EVENTS :", events)
+    // EVENTS : [
+      //   {
+        //     id: '1',
+        //     name: 'Throwback Thursdays with DJ Manny Duke',
+        //     slug: 'throwback-thursdays-with-dj-manny-duke',
+        //     venue: 'Horizon Club',
+        //     address: '919 3rd Ave New York, New York(NY), 10022',
+        //     performers: 'DJ Manny Duke',
+        //     date: 'June 09, 2021',
+        //     time: '10:00 PM EST',
+        //     description: "Featuring deep cuts, party anthems and remixes nostalgic songs from two of the best decades of music with the very best music from the 90's and 2000's",
+        //     image: '/images/sample/event1.jpg'
+        //   }
+        // ]
 
-  return {
-    paths,
-    fallback: false,
+    // events is an array with one object thats why => evt: events[0]
+    return {
+      props :  {
+        evt: events[0],
+      },
+      revalidate: 1
+    }
   }
-}
+
 
 
 

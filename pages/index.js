@@ -8,7 +8,7 @@ import EventItem from '@/components/EventItem'
 export default function HomePage({events}) {
   // this runs server side first, then runs on the client side
   // see chrome console
-  console.log(events)
+  // console.log(events)
   return (
     <Layout>
       <h1>Upcoming Events</h1>
@@ -27,17 +27,19 @@ export default function HomePage({events}) {
 }
 
 export const getStaticProps = async () => {
-  const res = await fetch(`${API_URL}/api/events`)
+  // const res = await fetch(`${API_URL}/api/events`)
+  const res = await fetch(`${API_URL}/events?_sort=date:ASC&_limit=3`)
 
   const events = await res.json()
 
   // this runs server side first
   // see integrated console
-  console.log(events)
+  // console.log(events)
 
 
   return {
-    props: {events:events.slice(0, 3)}, // will be passed to the page component as props
+    // props: {events:events.slice(0, 3)}, // will be passed to the page component as props
+    props: {events}, // will be passed to the page component as props
 
     // the events get generated at build time one, but what if someone edit an event, they can't see the change, so we need to add a revalidate and set it to a certain amount of seconds
     revalidate: 1
